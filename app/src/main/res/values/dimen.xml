@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--List item-->
+    <dimen name="list_item_padding">8dp</dimen>
+    <!--List item text-->
+    <dimen name="article_section">16sp</dimen>
+    <dimen name="article_title">16sp</dimen>
+    <dimen name="article_date">14sp</dimen>
+    <dimen name="article_information_offset">4dp</dimen>
+
+    <dimen name="finger_ic_size">40dp</dimen>
+    <dimen name="finger_ic_horizontal_margin">16dp</dimen>
+
+    <!--Choose section container-->
+    <dimen name="section_text_size">14sp</dimen>
+    <dimen name="choose_section_container_padding">8dp</dimen>
+    <dimen name="section_text_left_margin">16dp</dimen>
+    <dimen name="section_text_right_margin">8dp</dimen>
+
+    <!--Spinner-->
+    <dimen name="spinner_stroke">2dp</dimen>
+    <dimen name="spinner_corner_radius">3dp</dimen>
+    <dimen name="spinner_vertical_padding">4dp</dimen>
+    <dimen name="spinner_arrow_right_padding">4dp</dimen>
+    <dimen name="spinner_right_padding">16dp</dimen>
+    <dimen name="spinner_right_margin">12dp</dimen>
+    <dimen name="spinner_elevation">2dp</dimen>
+
+    <!--Refresh button-->
+    <dimen name="refresh_button_size">40dp</dimen>
+    <dimen name="refresh_ic_size">28dp</dimen>
+    <dimen name="button_corner">4dp</dimen>
+    <dimen name="refresh_button_elevation">2dp</dimen>
+    <dimen name="section_container_elevation">2dp</dimen>
+
+    <!--Progress bar-->
+    <dimen name="progress_bar_size">48dp</dimen>
+
+    <!--Empty view-->
+    <dimen name="empty_view_text_size">16sp</dimen>
+</resources>

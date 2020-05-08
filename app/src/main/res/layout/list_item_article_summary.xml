@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:padding="@dimen/list_item_padding">
+    <LinearLayout
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_weight="1"
+        android:orientation="vertical">
+        <TextView
+            android:id="@+id/article_section_text"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/article_section"
+            android:textColor="@color/secondaryTextColor"
+            android:layout_marginBottom="@dimen/article_information_offset"/>
+        <TextView
+            android:id="@+id/article_title"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/article_title"
+            android:textStyle="bold"
+            android:maxLines="2"
+            android:ellipsize="end"
+            android:layout_marginBottom="@dimen/article_information_offset"/>
+        <TextView
+            android:id="@+id/article_date"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:textSize="@dimen/article_date"
+            android:textColor="@color/secondaryTextColor"/>
+    </LinearLayout>
+
+    <ImageView
+        android:layout_width="@dimen/finger_ic_size"
+        android:layout_height="@dimen/finger_ic_size"
+        android:layout_marginHorizontal="@dimen/finger_ic_horizontal_margin"
+        android:layout_gravity="center_vertical"
+        app:srcCompat="@drawable/ic_finger_touches"/>
+</LinearLayout>

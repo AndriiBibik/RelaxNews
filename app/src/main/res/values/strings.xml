@@ -1,0 +1,22 @@
+<resources>
+    <string name="app_name">Relax News</string>
+    <!--Section title text-->
+    <string name="section_text">Section:</string>
+    <!--Section spinner items-->
+    <string-array name="section_items">
+        <item>Relaxation</item>
+        <item>Exercises</item>
+        <item>All</item>
+    </string-array>
+
+    <!--Uri parameters-->
+    <string name="or_in_uri">%20OR%20</string>
+    <string name="and_in_uri">%20AND%20</string>
+    <string name="health_word">health</string>
+
+    <!--Empty view text-->
+    <string name="empty_view_text">There is no any articles...</string>
+
+    <!--Guardian API key encoded-->
+    <string name="api_key_encoded">NGY0ZGM0Y2YtN2E3OS00ZmYwLThiNDQtNDUxMDVjZjZiMzYw</string>
+</resources>

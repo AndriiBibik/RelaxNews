@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:orientation="vertical"
+    tools:context=".MainActivity">
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@color/choose_section_container_background_color"
+        android:padding="@dimen/choose_section_container_padding"
+        android:elevation="@dimen/section_container_elevation"
+        android:clipToPadding="false"
+        android:gravity="center_vertical">
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/section_text"
+            android:layout_marginLeft="@dimen/section_text_left_margin"
+            android:layout_marginRight="@dimen/section_text_right_margin"/>
+        <Spinner
+            android:id="@+id/spinner_section"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingRight="@dimen/spinner_right_padding"
+            android:paddingVertical="@dimen/spinner_vertical_padding"
+            android:layout_marginRight="@dimen/spinner_right_margin"
+            android:elevation="@dimen/spinner_elevation"
+            android:background="@drawable/spinner_background"/>
+        <LinearLayout
+            android:id="@+id/refresh_results_button"
+            android:layout_width="@dimen/refresh_button_size"
+            android:layout_height="@dimen/refresh_button_size"
+            android:gravity="center"
+            android:background="@drawable/refresh_button_background"
+            android:foreground="?selectableItemBackground"
+            android:elevation="@dimen/refresh_button_elevation">
+            <ImageView
+                android:layout_width="@dimen/refresh_ic_size"
+                android:layout_height="@dimen/refresh_ic_size"
+                app:srcCompat="@drawable/ic_news_lines"
+                android:tint="@android:color/white"/>
+        </LinearLayout>
+    </LinearLayout>
+
+    <LinearLayout
+        android:id="@+id/progress_indicator"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center">
+        <ProgressBar
+            android:layout_width="@dimen/progress_bar_size"
+            android:layout_height="@dimen/progress_bar_size"/>
+    </LinearLayout>
+
+
+    <ListView
+        android:id="@+id/list_articles"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:visibility="gone"/>
+
+    <TextView
+        android:id="@+id/empty_view"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="@dimen/empty_view_text_size"
+        android:text="@string/empty_view_text" />
+</LinearLayout>

@@ -69,4 +69,12 @@
         android:gravity="center"
         android:textSize="@dimen/empty_view_text_size"
         android:text="@string/empty_view_text" />
+    <TextView
+        android:id="@+id/no_internet"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:textSize="@dimen/empty_view_text_size"
+        android:text="@string/internet_down_text"
+        android:visibility="gone"/>
 </LinearLayout>

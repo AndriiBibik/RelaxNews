@@ -2,6 +2,8 @@ package net.relax.news.utils;
 
 import android.content.Context;
 import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.net.Uri;
 import net.relax.news.MainActivity;
 import net.relax.news.R;
@@ -143,7 +145,7 @@ public class Utils {
                                 : "";
                         String date
                                 = item.has(DATE_JSON_PRIMITIVE)
-                                ? item.getString(DATE_JSON_PRIMITIVE)
+                                ? item.getString(DATE_JSON_PRIMITIVE).substring(0, 10)
                                 : "";
                         String url
                                 = item.has(WEB_URL_JSON_PRIMITIVE)
@@ -158,6 +160,33 @@ public class Utils {
         } catch (JSONException e) {
             e.printStackTrace();
         }
-        return null;
+        return new ArrayList<>();
+    }
+
+    // getting loader id considering shared prefs to load and reuse appropriate info
+    public static int getLoaderIdConsideringPrefs(Context context) {
+
+        SharedPreferences sp = context.getSharedPreferences(MainActivity.SHARED_PREFERENCES_NAME, Context.MODE_PRIVATE);
+
+        String[] array = context.getResources().getStringArray(R.array.section_items);
+        String relaxation = array[0];
+        String exercises = array[1];
+        String all = array[2];
+
+        String section = sp.getString(MainActivity.SECTION_NAME_KEY, all);
+
+        if (section.equalsIgnoreCase(relaxation))
+            return 0;
+        else if (section.equalsIgnoreCase(exercises))
+            return 1;
+        else
+            return 2;
+    }
+
+    public static boolean isNetworkAvailable(Context context) {
+        ConnectivityManager connectivityManager
+                = (ConnectivityManager) context.getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetworkInfo = connectivityManager.getActiveNetworkInfo();
+        return activeNetworkInfo != null && activeNetworkInfo.isConnected();
     }
 }

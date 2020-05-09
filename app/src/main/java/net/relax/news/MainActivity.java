@@ -1,11 +1,14 @@
 package net.relax.news;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.loader.app.LoaderManager;
+import androidx.loader.content.AsyncTaskLoader;
+import androidx.loader.content.Loader;
 
+import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.AdapterView;
@@ -22,7 +25,9 @@ import butterknife.BindView;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 
-public class MainActivity extends AppCompatActivity implements AdapterView.OnItemSelectedListener {
+public class MainActivity extends AppCompatActivity implements
+        AdapterView.OnItemSelectedListener,
+        LoaderManager.LoaderCallbacks<List<Article>> {
 
     public static final String LOG_TAG = MainActivity.class.getSimpleName();
 
@@ -51,17 +56,34 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
         spinnerSection.setSelection(adapter1.getPosition(getStoredSection()));
 
         // starting AsyncTask
-        new ArticlesAssyncTask().execute(Utils.getUriConsideringPrefs(MainActivity.this));
+        if (Utils.isNetworkAvailable(this)) {
+            int loaderId = Utils.getLoaderIdConsideringPrefs(this);
+            getSupportLoaderManager().initLoader(loaderId, null, this);
+        } else {
+            findViewById(R.id.list_articles).setVisibility(View.GONE);
+            findViewById(R.id.progress_indicator).setVisibility(View.GONE);
+            findViewById(R.id.empty_view).setVisibility(View.GONE);
+            findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+        }
+
     }
 
     @OnClick (R.id.refresh_results_button)
     void refreshResults() {
-        //enable progress indicator
-        findViewById(R.id.progress_indicator).setVisibility(View.VISIBLE);
-        //disable list view
-        findViewById(R.id.list_articles).setVisibility(View.GONE);
-        // starting AsyncTask
-        new ArticlesAssyncTask().execute(Utils.getUriConsideringPrefs(MainActivity.this));
+        if (Utils.isNetworkAvailable(this)) {
+            //enable progress indicator
+            findViewById(R.id.progress_indicator).setVisibility(View.VISIBLE);
+            //disable list view
+            findViewById(R.id.list_articles).setVisibility(View.GONE);
+            // starting Loading
+            int loaderId = Utils.getLoaderIdConsideringPrefs(this);
+            getSupportLoaderManager().initLoader(loaderId, null, this);
+        } else {
+            findViewById(R.id.list_articles).setVisibility(View.GONE);
+            findViewById(R.id.progress_indicator).setVisibility(View.GONE);
+            findViewById(R.id.empty_view).setVisibility(View.GONE);
+            findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+        }
     }
 
     // Getting section from shared preferences
@@ -92,39 +114,45 @@ public class MainActivity extends AppCompatActivity implements AdapterView.OnIte
 
     }
 
-    // AsyncTask to run Http request
-    private class ArticlesAssyncTask extends AsyncTask<String, Void, List<Article>> {
+    // Loader
+    @Override
+    public Loader<List<Article>> onCreateLoader(int id, Bundle args) {
+        return new ArticlesLoader(this);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<List<Article>> loader, List<Article> articles) {
+        updateUi(articles);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<List<Article>> loader) {
+        updateUi(new ArrayList<>());
+    }
+
+    private static class ArticlesLoader extends AsyncTaskLoader<List<Article>> {
+
+        public ArticlesLoader(Context context) { super(context); }
 
         @Override
-        protected List<Article> doInBackground(String... urls) {
+        public List<Article> loadInBackground() {
 
-            if (urls != null && urls.length > 0 ) {
-                if (urls[0] != null && !urls[0].isEmpty()) {
+            // getting list of articles from url
+            InputStream jsonInputStream = Utils.getInputStream(Utils.getUriConsideringPrefs(getContext()));
+            String json = Utils.getStringFromStream(jsonInputStream);
+            List<Article> articles = Utils.getListOfArticles(json);
 
-                    try {
-                        Thread.sleep(5000);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
-                    }
-                    // getting list of articles from url
-                    InputStream jsonInputStream = Utils.getInputStream(urls[0]);
-                    String json = Utils.getStringFromStream(jsonInputStream);
-                    List<Article> articles = Utils.getListOfArticles(json);
-
-                    return articles;
-                }
-
-            }
-
-            return new ArrayList<>();
+            return articles;
         }
 
         @Override
-        protected void onPostExecute(List<Article> articles) {
-            updateUi(articles);
+        protected void onStartLoading() {
+            super.onStartLoading();
+            forceLoad();
         }
     }
 
+    // Spinner
     @Override
     public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
         //store selected item in shared preferences

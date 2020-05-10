@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 import net.relax.news.R;
+
+import java.util.Arrays;
 import java.util.List;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -41,6 +43,10 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         holder.section.setText(article.getSection());
         holder.title.setText(article.getTitle());
         holder.date.setText(article.getDate());
+        holder.authors.setText(
+                Arrays.toString(article.getAuthors())
+                        .replace("[", "")
+                        .replace("]", ""));
 
         return convertView;
     }
@@ -49,6 +55,7 @@ public class ArticleAdapter extends ArrayAdapter<Article> {
         @BindView(R.id.article_section_text) TextView section;
         @BindView(R.id.article_title) TextView title;
         @BindView(R.id.article_date) TextView date;
+        @BindView(R.id.article_authors) TextView authors;
 
         ViewHolder(View view) {
             ButterKnife.bind(this, view);

@@ -18,7 +18,7 @@
     <string name="empty_view_text">There is no any articles...</string>
 
     <!--No internet text-->
-    <string name="internet_down_text">Internet is down...</string>
+    <string name="internet_down_text">Internet is down... Please connect and refresh by button at the top..</string>
 
     <!--Guardian API key encoded-->
     <string name="api_key_encoded">NGY0ZGM0Y2YtN2E3OS00ZmYwLThiNDQtNDUxMDVjZjZiMzYw</string>

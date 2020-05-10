@@ -7,6 +7,8 @@
     <dimen name="article_title">16sp</dimen>
     <dimen name="article_date">14sp</dimen>
     <dimen name="article_information_offset">4dp</dimen>
+    <dimen name="date_to_authors_offset">16dp</dimen>
+    <dimen name="authors_text_size">14sp</dimen>
 
     <dimen name="finger_ic_size">40dp</dimen>
     <dimen name="finger_ic_horizontal_margin">16dp</dimen>
@@ -37,5 +39,9 @@
     <dimen name="progress_bar_size">48dp</dimen>
 
     <!--Empty view-->
-    <dimen name="empty_view_text_size">16sp</dimen>
+    <dimen name="empty_view_text_size">18sp</dimen>
+
+    <!--No internet hint-->
+    <dimen name="empty_view_padding">8dp</dimen>
+
 </resources>

@@ -4,7 +4,6 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.loader.app.LoaderManager;
 import androidx.loader.content.AsyncTaskLoader;
 import androidx.loader.content.Loader;
-
 import android.content.Context;
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -15,6 +14,7 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Spinner;
+import android.widget.TextView;
 import net.relax.news.custom.Article;
 import net.relax.news.custom.ArticleAdapter;
 import net.relax.news.utils.Utils;
@@ -34,7 +34,18 @@ public class MainActivity extends AppCompatActivity implements
     public static final String SHARED_PREFERENCES_NAME = "sharedPrefs";
     public static final String SECTION_NAME_KEY = "section";
 
-    @BindView(R.id.spinner_section) Spinner spinnerSection;
+    // list of articles that could be loaded by loader
+    private static List<Article> articlesRelaxation;
+    private static List<Article> articlesExercises;
+    private static List<Article> articlesAll;
+
+
+    @BindView(R.id.spinner_section)
+    Spinner spinnerSection;
+
+    // empty view
+    @BindView(R.id.empty_view)
+    TextView emptyView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,34 +66,34 @@ public class MainActivity extends AppCompatActivity implements
         spinnerSection.setAdapter(adapter1);
         spinnerSection.setSelection(adapter1.getPosition(getStoredSection()));
 
-        // starting AsyncTask
         if (Utils.isNetworkAvailable(this)) {
+            // initializing loader
             int loaderId = Utils.getLoaderIdConsideringPrefs(this);
             getSupportLoaderManager().initLoader(loaderId, null, this);
+
         } else {
-            findViewById(R.id.list_articles).setVisibility(View.GONE);
-            findViewById(R.id.progress_indicator).setVisibility(View.GONE);
-            findViewById(R.id.empty_view).setVisibility(View.GONE);
-            findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+            emptyView.setText(R.string.internet_down_text);
+            updateUi(new ArrayList<>());
         }
 
     }
 
-    @OnClick (R.id.refresh_results_button)
+    @OnClick(R.id.refresh_results_button)
     void refreshResults() {
+        // make loading indicator visible again
+        findViewById(R.id.progress_indicator).setVisibility(View.VISIBLE);
+        // check for network connection
         if (Utils.isNetworkAvailable(this)) {
-            //enable progress indicator
-            findViewById(R.id.progress_indicator).setVisibility(View.VISIBLE);
-            //disable list view
-            findViewById(R.id.list_articles).setVisibility(View.GONE);
-            // starting Loading
+            // empty view to initial state (indicating there is no results)
+            emptyView.setText(R.string.empty_view_text);
+            // initializing loader
             int loaderId = Utils.getLoaderIdConsideringPrefs(this);
             getSupportLoaderManager().initLoader(loaderId, null, this);
         } else {
-            findViewById(R.id.list_articles).setVisibility(View.GONE);
-            findViewById(R.id.progress_indicator).setVisibility(View.GONE);
-            findViewById(R.id.empty_view).setVisibility(View.GONE);
-            findViewById(R.id.no_internet).setVisibility(View.VISIBLE);
+            // no internet text into empty view
+            emptyView.setText(R.string.internet_down_text);
+            // then update ui with empty data
+            updateUi(new ArrayList<>());
         }
     }
 
@@ -103,15 +114,12 @@ public class MainActivity extends AppCompatActivity implements
         listArticles.setEmptyView(findViewById(R.id.empty_view));
         listArticles.setOnItemClickListener((parent, view, position, id) -> {
             Intent intent = new Intent(Intent.ACTION_VIEW);
-            intent.setData(Uri.parse(((Article)parent.getItemAtPosition(position)).getUrlString()));
+            intent.setData(Uri.parse(((Article) parent.getItemAtPosition(position)).getUrlString()));
             startActivity(intent);
         });
 
-        // enable list view
-        listArticles.setVisibility(View.VISIBLE);
         // disable progress indicator
         findViewById(R.id.progress_indicator).setVisibility(View.GONE);
-
     }
 
     // Loader
@@ -130,25 +138,57 @@ public class MainActivity extends AppCompatActivity implements
         updateUi(new ArrayList<>());
     }
 
-    private static class ArticlesLoader extends AsyncTaskLoader<List<Article>> {
+    public static class ArticlesLoader extends AsyncTaskLoader<List<Article>> {
 
-        public ArticlesLoader(Context context) { super(context); }
+        public static final int LOADER_ID_RELAXATION = 100;
+        public static final int LOADER_ID_EXERCISES = 101;
+        public static final int LOADER_ID_ALL = 102;
+
+        public ArticlesLoader(Context context) {
+            super(context);
+        }
 
         @Override
         public List<Article> loadInBackground() {
 
-            // getting list of articles from url
             InputStream jsonInputStream = Utils.getInputStream(Utils.getUriConsideringPrefs(getContext()));
             String json = Utils.getStringFromStream(jsonInputStream);
             List<Article> articles = Utils.getListOfArticles(json);
+
+            switch (getId()) {
+                case LOADER_ID_RELAXATION:
+                    articlesRelaxation = articles;
+                    break;
+                case LOADER_ID_EXERCISES:
+                    articlesExercises = articles;
+                    break;
+                default:
+                    articlesAll = articles;
+                    break;
+            }
 
             return articles;
         }
 
         @Override
         protected void onStartLoading() {
-            super.onStartLoading();
-            forceLoad();
+            switch (getId()) {
+                case LOADER_ID_RELAXATION:
+                    if (articlesRelaxation == null) {
+                        forceLoad();
+                    }
+                    break;
+                case LOADER_ID_EXERCISES:
+                    if (articlesExercises == null) {
+                        forceLoad();
+                    }
+                    break;
+                case LOADER_ID_ALL:
+                    if (articlesAll == null) {
+                        forceLoad();
+                    }
+                    break;
+            }
         }
     }
 
@@ -158,9 +198,9 @@ public class MainActivity extends AppCompatActivity implements
         //store selected item in shared preferences
         SharedPreferences sp = getSharedPreferences(SHARED_PREFERENCES_NAME, MODE_PRIVATE);
         sp
-            .edit()
-            .putString(SECTION_NAME_KEY, (String) parent.getItemAtPosition(position))
-            .apply();
+                .edit()
+                .putString(SECTION_NAME_KEY, (String) parent.getItemAtPosition(position))
+                .apply();
     }
 
     @Override
